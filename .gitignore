@@ -1,0 +1,20 @@
+# Environments
+backend/venv/
+backend/.env
+frontend/node_modules/
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Azure & IDEs
+.vscode/
+.idea/
+.DS_Store
+
+# Static Build
+frontend/dist/
+
+# Raw Data (Don't commit large CSVs, these live in Azure Blob Storage)
+data/*.csv
