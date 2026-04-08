@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // For development, we assume FastAPI is running on port 8001 locally
-const API_URL = import.meta.env.VITE_API_URL || 'https://ai-energy-backend.azurewebsites.net/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://ai-energy-backend-e6g3h8a2eqckeph2.southeastasia-01.azurewebsites.net/api';
 
 const api = axios.create({
     baseURL: API_URL,
