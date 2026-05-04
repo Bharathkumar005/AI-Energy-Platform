@@ -1,6 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
-from app.core.security import get_current_user
-from app.models.user import User
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import joblib
 import pandas as pd
@@ -62,7 +60,7 @@ class PredictionRequest(BaseModel):
     target_date: str # format: YYYY-MM-DDTHH:MM:SS
 
 @router.post("/predict")
-def predict_energy(request: PredictionRequest, current_user: User = Depends(get_current_user)):
+def predict_energy(request: PredictionRequest):
     """
     Predict future energy consumption based on ML Random Forest Model.
     """
@@ -109,7 +107,7 @@ class AnomalyCheckRequest(BaseModel):
     hour: int
 
 @router.post("/check-anomaly")
-def check_anomaly(request: AnomalyCheckRequest, current_user: User = Depends(get_current_user)):
+def check_anomaly(request: AnomalyCheckRequest):
     """
     Dynamically check if current real-time usage constitutes an anomaly (energy waste).
     """

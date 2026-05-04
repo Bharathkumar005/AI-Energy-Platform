@@ -11,23 +11,16 @@ import { AuthProvider } from './context/AuthContext';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          
-          <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<SidebarLayout />}>
-              <Route index element={<Dashboard />} />
-              <Route path="analytics" element={<Analytics />} />
-              <Route path="ai-insights" element={<AIInsights />} />
-              <Route path="explorer" element={<DataExplorer />} />
-            </Route>
-          </Route>
-        </Routes>
-      </Router>
-    </AuthProvider>
+    <Router>
+      <Routes>
+        <Route path="/" element={<SidebarLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="analytics" element={<Analytics />} />
+          <Route path="ai-insights" element={<AIInsights />} />
+          <Route path="explorer" element={<DataExplorer />} />
+        </Route>
+      </Routes>
+    </Router>
   );
 }
 
