@@ -72,6 +72,6 @@ jobs:
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'ai-energy-backend'
+          app-name: 'aienergy-backend-ym356'
           slot-name: 'Production'
           

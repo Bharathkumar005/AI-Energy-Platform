@@ -1,9 +1,17 @@
 import { useState } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
-import { LayoutDashboard, TrendingUp, Lightbulb, Database, Menu, X, Zap } from 'lucide-react';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, TrendingUp, Lightbulb, Database, Menu, X, Zap, LogOut } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const SidebarLayout = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const { logout } = useAuth();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
 
     const navigation = [
         { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -57,11 +65,18 @@ const SidebarLayout = () => {
                 </nav>
 
                 <div className="p-4 border-t border-white/5 bg-slate-950/50 mt-auto">
-                    <div className="flex flex-col gap-1 text-xs text-slate-500">
+                    <div className="flex flex-col gap-1 text-xs text-slate-500 mb-4">
                         <span className="font-medium text-slate-400">System Status</span>
                         <span className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div> Azure Connected</span>
                         <span className="flex items-center gap-1 mt-1"><div className="w-2 h-2 rounded-full bg-blue-500"></div> ML Models Active</span>
                     </div>
+                    <button 
+                        onClick={handleLogout}
+                        className="flex items-center gap-2 w-full px-3 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-red-500/10 rounded-lg transition-colors"
+                    >
+                        <LogOut className="w-4 h-4" />
+                        Sign Out
+                    </button>
                 </div>
             </div>
 

@@ -18,3 +18,14 @@ frontend/dist/
 
 # Raw Data (Don't commit large CSVs, these live in Azure Blob Storage)
 data/*.csv
+
+# Terraform binaries, providers, and state files
+terraform/.terraform/
+terraform/terraform.exe
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/LICENSE.txt
+terraform/.terraform.lock.hcl
+
+# SQLite database
+backend/sql_app.db
