@@ -2,9 +2,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
-# If using PostgreSQL in production:
-# SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
+# On Azure, we want to ensure the database is in a writable location.
+# For demo purposes, we'll use an absolute path in the current directory.
+import os
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+SQLALCHEMY_DATABASE_URL = f"sqlite:///{os.path.join(os.path.dirname(BASE_DIR), 'sql_app.db')}"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
