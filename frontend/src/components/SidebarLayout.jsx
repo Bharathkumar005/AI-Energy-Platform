@@ -5,13 +5,6 @@ import { useAuth } from '../context/AuthContext';
 
 const SidebarLayout = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const { logout } = useAuth();
-    const navigate = useNavigate();
-
-    const handleLogout = () => {
-        logout();
-        navigate('/login');
-    };
 
     const navigation = [
         { name: 'Dashboard', href: '/', icon: LayoutDashboard },
