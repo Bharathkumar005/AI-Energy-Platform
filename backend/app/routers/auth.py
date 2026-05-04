@@ -8,7 +8,7 @@ from datetime import timedelta
 from pydantic import BaseModel
 
 router = APIRouter(
-    prefix="/auth",
+    prefix="/api/auth",
     tags=["Authentication"]
 )
 
