@@ -17,7 +17,10 @@ app = FastAPI(
 # Allow React Frontend to connect to this API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # For production, restrict to Azure Static Web App URL
+    allow_origins=[
+        "http://localhost:5173",
+        "https://lively-mushroom-08b43bf00.7.azurestaticapps.net"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
