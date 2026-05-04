@@ -15,12 +15,10 @@ app = FastAPI(
 )
 
 # Allow React Frontend to connect to this API
+# Using Universal CORS for the Demo Review to ensure 100% stability
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "https://lively-mushroom-08b43bf00.7.azurestaticapps.net"
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
