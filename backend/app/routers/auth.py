@@ -62,3 +62,26 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.post("/demo-login", response_model=Token)
+def demo_login(db: Session = Depends(get_db)):
+    """
+    Special endpoint for project review/demo.
+    Ensures a 'demo_user' exists and provides an instant valid session token.
+    """
+    demo_username = "Reviewer_Guest"
+    user = db.query(User).filter(User.username == demo_username).first()
+    
+    if not user:
+        # Create a dummy guest user if it doesn't exist
+        hashed_password = get_password_hash("demo_password_123")
+        user = User(username=demo_username, hashed_password=hashed_password)
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}

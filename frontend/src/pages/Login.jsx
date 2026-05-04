@@ -27,6 +27,20 @@ const Login = () => {
     }
   };
 
+  const handleDemoLogin = async () => {
+    setIsLoading(true);
+    setError('');
+    try {
+      const data = await authService.demoLogin();
+      login(data.access_token);
+      navigate('/');
+    } catch (err) {
+      setError('Demo access failed. Please use standard login.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 bg-opacity-90 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')] bg-cover bg-blend-overlay">
       <div className="max-w-md w-full p-8 backdrop-blur-xl bg-white/10 rounded-2xl border border-white/20 shadow-2xl">
@@ -72,6 +86,20 @@ const Login = () => {
             className={`w-full py-3 px-4 flex justify-center rounded-xl shadow-lg text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
           >
             {isLoading ? 'Signing in...' : 'Sign in'}
+          </button>
+
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-white/10"></span></div>
+            <div className="relative flex justify-center text-xs uppercase"><span className="bg-slate-900/50 px-2 text-gray-400">Demo Access</span></div>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleDemoLogin}
+            disabled={isLoading}
+            className="w-full py-3 px-4 flex justify-center rounded-xl border border-emerald-500/50 text-sm font-semibold text-emerald-400 hover:bg-emerald-500/10 transition-all focus:outline-none"
+          >
+            Reviewer Quick Access
           </button>
         </form>
 

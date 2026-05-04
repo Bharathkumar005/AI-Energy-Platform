@@ -45,6 +45,10 @@ export const authService = {
     register: async (username, password) => {
         const response = await api.post('/auth/register', { username, password });
         return response.data;
+    },
+    demoLogin: async () => {
+        const response = await api.post('/auth/demo-login');
+        return response.data;
     }
 };
 
