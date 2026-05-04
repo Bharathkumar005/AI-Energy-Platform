@@ -1,7 +1,11 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from app.routers import analytics, ml
+from app.routers import analytics, ml, auth
+from app.database import engine, Base
+
+# Create DB tables
+Base.metadata.create_all(bind=engine)
 import traceback
 
 app = FastAPI(
@@ -31,6 +35,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 app.include_router(analytics.router)
 app.include_router(ml.router)
+app.include_router(auth.router)
 
 @app.get("/")
 def read_root():

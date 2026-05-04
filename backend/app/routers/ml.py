@@ -1,4 +1,6 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from app.core.security import get_current_user
+from app.models.user import User
 from pydantic import BaseModel
 import joblib
 import pandas as pd
@@ -12,20 +14,55 @@ router = APIRouter(
 
 # Load Models Safely
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+model_load_errors = {}
 try:
     rf_model = joblib.load(os.path.join(base_dir, 'models', 'rf_energy_model.pkl'))
-    iso_model = joblib.load(os.path.join(base_dir, 'models', 'iso_anomaly_model.pkl'))
-    label_encoder = joblib.load(os.path.join(base_dir, 'models', 'appliance_encoder.pkl'))
+    print("RF model loaded successfully")
 except Exception as e:
-    print(f"Error loading models: {e}. Check if you ran the notebook/training script.")
-    rf_model, iso_model, label_encoder = None, None, None
+    print(f"RF model failed to load: {e}")
+    model_load_errors['rf_model'] = str(e)
+    rf_model = None
+
+try:
+    iso_model = joblib.load(os.path.join(base_dir, 'models', 'iso_anomaly_model.pkl'))
+    print("ISO model loaded successfully")
+except Exception as e:
+    print(f"ISO model failed to load: {e}")
+    model_load_errors['iso_model'] = str(e)
+    iso_model = None
+
+try:
+    label_encoder = joblib.load(os.path.join(base_dir, 'models', 'appliance_encoder.pkl'))
+    print("Label encoder loaded successfully")
+except Exception as e:
+    print(f"Label encoder failed to load: {e}")
+    model_load_errors['label_encoder'] = str(e)
+    label_encoder = None
+
+@router.get("/status")
+def model_status():
+    """Diagnostic endpoint - shows which models loaded and any errors."""
+    import sklearn
+    return {
+        "sklearn_version": sklearn.__version__,
+        "rf_model_loaded": rf_model is not None,
+        "iso_model_loaded": iso_model is not None,
+        "label_encoder_loaded": label_encoder is not None,
+        "errors": model_load_errors,
+        "model_dir": os.path.join(base_dir, 'models'),
+        "model_files_exist": {
+            "rf": os.path.exists(os.path.join(base_dir, 'models', 'rf_energy_model.pkl')),
+            "iso": os.path.exists(os.path.join(base_dir, 'models', 'iso_anomaly_model.pkl')),
+            "encoder": os.path.exists(os.path.join(base_dir, 'models', 'appliance_encoder.pkl')),
+        }
+    }
 
 class PredictionRequest(BaseModel):
     appliance: str
     target_date: str # format: YYYY-MM-DDTHH:MM:SS
 
 @router.post("/predict")
-def predict_energy(request: PredictionRequest):
+def predict_energy(request: PredictionRequest, current_user: User = Depends(get_current_user)):
     """
     Predict future energy consumption based on ML Random Forest Model.
     """
@@ -72,7 +109,7 @@ class AnomalyCheckRequest(BaseModel):
     hour: int
 
 @router.post("/check-anomaly")
-def check_anomaly(request: AnomalyCheckRequest):
+def check_anomaly(request: AnomalyCheckRequest, current_user: User = Depends(get_current_user)):
     """
     Dynamically check if current real-time usage constitutes an anomaly (energy waste).
     """

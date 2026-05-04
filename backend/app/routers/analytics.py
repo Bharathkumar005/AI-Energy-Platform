@@ -1,5 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from app.services.data_service import get_energy_data
+from app.core.security import get_current_user
+from app.models.user import User
 
 router = APIRouter(
     prefix="/api/analytics",
@@ -7,7 +9,7 @@ router = APIRouter(
 )
 
 @router.get("/summary")
-def get_dashboard_summary():
+def get_dashboard_summary(current_user: User = Depends(get_current_user)):
     """
     Returns high-level statistics:
     - Total Energy Consumed Today (kWh)
@@ -37,7 +39,7 @@ def get_dashboard_summary():
     }
 
 @router.get("/hourly")
-def get_hourly_usage():
+def get_hourly_usage(current_user: User = Depends(get_current_user)):
     """
     Returns average usage per hour (across the dataset) for plotting line charts.
     """
@@ -49,7 +51,7 @@ def get_hourly_usage():
     return hourly_avg.to_dict(orient="records")
 
 @router.get("/appliances")
-def get_appliance_usage():
+def get_appliance_usage(current_user: User = Depends(get_current_user)):
     """
     Returns total energy used grouped by appliance for pie charts.
     """
