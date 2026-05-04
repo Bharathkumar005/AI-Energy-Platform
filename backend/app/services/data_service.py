@@ -10,9 +10,14 @@ AZURE_CONNECTION_STRING = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
 CONTAINER_NAME = "energy-data"
 BLOB_NAME = "energy_dataset.csv"
 
-# Absolute path to the local CSV fallback - goes up from backend/app/services/ -> project root -> data/
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-LOCAL_CSV_PATH = os.path.join(BASE_DIR, 'data', 'energy_dataset.csv')
+# Absolute path to the local CSV fallback - tries a few locations for Azure compatibility
+curr_dir = os.path.dirname(os.path.abspath(__file__)) # app/services
+project_root = os.path.dirname(os.path.dirname(os.path.dirname(curr_dir))) # root
+LOCAL_CSV_PATH = os.path.join(project_root, 'data', 'energy_dataset.csv')
+
+# Alternative check if path exists, otherwise try relative to app
+if not os.path.exists(LOCAL_CSV_PATH):
+    LOCAL_CSV_PATH = os.path.join(os.path.dirname(os.path.dirname(curr_dir)), 'data', 'energy_dataset.csv')
 
 # In-memory cache for the data so we do not hit Azure Storage on every single API request
 _cached_data = None
