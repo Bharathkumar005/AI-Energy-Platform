@@ -68,6 +68,24 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_BEC52176015D41A5A412ABD9E821539F }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8C3E9A89503244099B1818A2F4F2520F }}
 
+      - name: 'Set App Service Environment Variables'
+        uses: azure/appservice-settings@v1
+        with:
+          app-name: 'aienergy-backend-python'
+          app-settings-json: |
+            [
+              {
+                "name": "AZURE_STORAGE_CONNECTION_STRING",
+                "value": "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}",
+                "slotSetting": false
+              },
+              {
+                "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
+                "value": "true",
+                "slotSetting": false
+              }
+            ]
+
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp

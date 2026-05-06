@@ -7,6 +7,7 @@ const Dashboard = () => {
     const [summary, setSummary] = useState(null);
     const [hourlyData, setHourlyData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchDashboardData = async () => {
@@ -15,12 +16,21 @@ const Dashboard = () => {
                     analyticsAPI.getSummary(),
                     analyticsAPI.getHourly(),
                 ]);
-                setSummary(summaryRes.data);
-                // take first 24 hours of data to show a daily trend curve
+                // Backend returns {error: ...} when data is unavailable
+                if (summaryRes.data && summaryRes.data.error) {
+                    setError(`Backend data error: ${summaryRes.data.error}`);
+                } else {
+                    setSummary(summaryRes.data);
+                }
                 setHourlyData(hourlyRes.data.slice(0, 24));
                 setLoading(false);
-            } catch (error) {
-                console.error("Error fetching dashboard data", error);
+            } catch (err) {
+                console.error("Error fetching dashboard data", err);
+                setError(
+                    err.response
+                        ? `API Error ${err.response.status}: ${JSON.stringify(err.response.data)}`
+                        : `Cannot reach backend: ${err.message}. Check CORS or if the Azure App Service is running.`
+                );
                 setLoading(false);
             }
         };
@@ -42,7 +52,18 @@ const Dashboard = () => {
                 <p className="text-slate-500 mt-1">Real-time metrics and estimated costs from Azure Services.</p>
             </div>
 
-            {summary && !summary.error ? (
+            {error ? (
+                <div className="p-4 bg-red-50 text-red-700 rounded-xl border border-red-200 flex flex-col gap-2">
+                    <p className="font-semibold">⚠️ Failed to load data from the Azure Backend API.</p>
+                    <p className="text-sm text-red-500">{error}</p>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="self-start mt-1 px-4 py-1.5 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
+                    >
+                        Retry
+                    </button>
+                </div>
+            ) : summary ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <StatCard
                         title="Today's Consumption"
@@ -73,8 +94,8 @@ const Dashboard = () => {
                     />
                 </div>
             ) : (
-                <div className="p-4 bg-red-50 text-red-600 rounded-xl border border-red-100">
-                    Warning: Failed to load data from the Azure Backend API. Is FastAPI running?
+                <div className="p-4 bg-amber-50 text-amber-700 rounded-xl border border-amber-200">
+                    ℹ️ No summary data available yet. Ensure the dataset is uploaded to Azure Blob Storage.
                 </div>
             )}
 
