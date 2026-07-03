@@ -57,4 +57,4 @@ This repository is equipped with GitHub Actions (`.github/workflows`) to automat
 ---
 
 ## 👨‍💻 Developed By
-*(Add your name / student ID here)*
+Bharath Kumar M AND Deepak K
