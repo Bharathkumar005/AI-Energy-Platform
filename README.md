@@ -1,6 +1,6 @@
 # AI-Based Energy Consumption & Cost Optimization Platform ⚡
 
-A complete, cloud-native full-stack academic project utilizing **Microsoft Azure**, **Machine Learning (Scikit-Learn)**, **Python FastAPI**, and **React**.
+A complete, cloud-native full-stack project utilizing **Microsoft Azure**, **Machine Learning (Scikit-Learn)**, **Python FastAPI**, and **React**.
 
 ## 📖 Project Overview
 
